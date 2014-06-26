@@ -1,0 +1,25 @@
+<% title "Raw Email" %>
+
+<p>
+  <strong>Raw Email:</strong>
+  <textarea class="raw_email" readonly><%= @raw_email.raw_email %></textarea>
+</p>
+
+	<table class="hovertable">
+		<% for header in @parsed_email["Header"] %>
+			<tr>
+				<td><%= header[0] %></td>
+				<td><%= header[1] %></td>
+			</tr>    
+		<% end %>
+	</table>
+<p>
+	<strong>Body</strong>
+	<textarea class="raw_email" readonly><%= @parsed_email["Body"] %></textarea>
+</p>
+
+<p>
+  <%= link_to "Edit", edit_raw_email_path(@raw_email) %> |
+  <%= link_to "Destroy", @raw_email, :confirm => 'Are you sure?', :method => :delete %> |
+  <%= link_to "View All", raw_emails_path %>
+</p>

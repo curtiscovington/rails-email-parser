@@ -1,0 +1,19 @@
+<% title "Raw Emails" %>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Header Count</th>
+  </tr>
+  <% for raw_email in @raw_emails %>
+    <tr>
+      <td><%= raw_email.id %></td>
+      <td><%= EmailParser::parse(raw_email.raw_email)["Header"].count %></td>
+      <td><%= link_to "Show", raw_email %></td>
+      <td><%= link_to "Edit", edit_raw_email_path(raw_email) %></td>
+      <td><%= link_to "Destroy", raw_email, :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p><%= link_to "New Raw Email", new_raw_email_path %></p>
