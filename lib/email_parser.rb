@@ -18,10 +18,10 @@ class EmailParser
 		fields = raw_email.split(HEADER_SPLIT)
 
 		parsed_email["Header"] = Hash.new
-		# Store the index of the first Content-Type header
+		
 		found_index = -1
 
-		parsing_header = true
+	
 		fields.each_with_index do |field, i| 
 			# Parse until we find the Content-Type
 			s = field.split(FIELD_SPLIT)
