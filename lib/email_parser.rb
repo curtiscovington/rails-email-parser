@@ -49,10 +49,8 @@ class EmailParser
 
 		
 		if (found_index != -1) 
-			# Drop all the preceeding header fields to get the body.
-			s = raw_email.split(/^\s*$/)
-			#puts s.count
 			
+			# Drop all the preceeding header fields to get the body.
 			body = fields.drop(found_index+1)
 			parsed_email["Body"] = body.join("\n")
 			#puts body
