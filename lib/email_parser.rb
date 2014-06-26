@@ -23,7 +23,7 @@ class EmailParser
 
 	
 		fields.each_with_index do |field, i| 
-			# Parse until we find the Content-Type
+		
 			s = field.split(FIELD_SPLIT)
 			field.match(/^\s*$/) do
 				
@@ -34,8 +34,7 @@ class EmailParser
 				end
 			end
 
-			#puts s
-			# This is a header field ~~~ In most cases.
+			
 			if (found_index == -1)
 					if (!s[1].nil?)
 						field_name = s[1]
