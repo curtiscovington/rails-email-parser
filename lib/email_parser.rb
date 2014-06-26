@@ -14,7 +14,7 @@ class EmailParser
 
 		# Seperate the email into an array by the line seperator
 		lines = raw_email.split(CRLF)
-		puts "TESTING #{lines.count}"
+		
 		fields = raw_email.split(HEADER_SPLIT)
 
 		parsed_email["Header"] = Hash.new
