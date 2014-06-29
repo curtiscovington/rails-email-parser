@@ -20,6 +20,8 @@ class EmailParser
 		if (body_index != -1)
 			header_fields = fields.shift(body_index)
 			parsed_email["Body"] = fields.join("\r\n")
+		else
+			header_fields = fields
 		end
 
 		parsed_email["Header"] = headers(header_fields)
