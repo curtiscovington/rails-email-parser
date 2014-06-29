@@ -12,50 +12,52 @@ class EmailParser
 	def self.parse(raw_email)
 		parsed_email = Hash.new
 
-		# Seperate the email into an array by the line seperator
-		lines = raw_email.split(CRLF)
-		
+		# Seperate the email into an array by the header
 		fields = raw_email.split(HEADER_SPLIT)
 
 		parsed_email["Header"] = Hash.new
-		
-		found_index = -1
 
-	
-		fields.each_with_index do |field, i| 
-		
-			s = field.split(FIELD_SPLIT)
-			field.match(/^\s*$/) do
-				
-				# Ignore the first line if it is a whitespace
-				if (i != 0)
-					found_index = i
-					break
-				end
-			end
+		body_index = start_of_body_index(fields)
 
-			
-			if (found_index == -1)
-					if (!s[1].nil?)
-						field_name = s[1]
-					
-						parsed_email["Header"][field_name] = s[2]
-					end
-			else 
-				break
-			end
+		if (body_index != -1)
+			header_fields = fields.shift(body_index)
+			parsed_email["Body"] = fields.join("\r\n")
 		end
 
-		
-		if (found_index != -1) 
-			
-			# Drop all the preceeding header fields to get the body.
-			body = fields.drop(found_index+1)
-			parsed_email["Body"] = body.join("\n")
-			#puts body
-		end
+		parsed_email["Header"] = headers(header_fields)
+
 
 		return parsed_email
 	end
 
+	private 
+
+	# Returns the index where the body begins
+	def self.start_of_body_index(fields)
+
+		fields.each_with_index do |field, i|
+			if m = field.match(/^\s*$/)
+				if (i != 0)
+					return i
+				end
+			end
+		end
+
+		# No match found
+		return -1
+	end
+
+	# Returns a new hash of the header fields
+	def self.headers(header_fields)
+		headers = Hash.new
+		header_fields.each_with_index do |field, i|
+			s = field.split(FIELD_SPLIT)
+			if (!s[1].nil?)
+				field_name = s[1]
+				headers[field_name] = s[2]
+			end
+		end
+
+		return headers
+	end
 end
