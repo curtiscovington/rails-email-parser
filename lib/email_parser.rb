@@ -15,8 +15,6 @@ class EmailParser
 		# Seperate the email into an array by the header
 		fields = raw_email.split(HEADER_SPLIT)
 
-		parsed_email["Header"] = Hash.new
-
 		body_index = start_of_body_index(fields)
 
 		if (body_index != -1)
