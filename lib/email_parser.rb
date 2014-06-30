@@ -19,13 +19,18 @@ class EmailParser
 
 		if (body_index != -1)
 			header_fields = fields.shift(body_index)
-			parsed_email["Body"] = fields.join("\r\n")
-		else
-			header_fields = fields
+			body = fields.join("\r\n")
 		end
 
 		parsed_email["Header"] = headers(header_fields)
 
+		if (!parsed_email["Header"]["Content-Type"].nil?)
+			content_type = parsed_email["Header"]["Content-Type"];
+		else
+			content_type = "text/plain"
+		end
+
+		parsed_email["Body"] = parse_body(content_type, body)
 
 		return parsed_email
 	end
@@ -59,5 +64,30 @@ class EmailParser
 		end
 
 		return headers
+	end
+
+	def self.parse_body(content_type,raw_body)
+
+		mime_type = content_type.match(/^[a-zA-Z]+\/[a-zA-Z]+;?/)[0]
+		
+		m = mime_type.scan(/[a-zA-Z]+/)
+		type = m[0]
+		subtype = m[1]
+		new_body = ""
+		if (type == "multipart")
+			boundary_equation = content_type.match(/boundary=[a-zA-Z0-9]+/)[0]
+			boundary = boundary_equation.split("=")[1]
+			
+			parts = raw_body.split(/(:\A|\r\n)--#{boundary}(?=(?:--)?\s*$)/)
+			parts[1...-1].to_a.each_with_index do |part, i|
+				# Can save these parts for use elsewhere
+				# For the simple purpose of this, just append to body.
+				new_body += part
+			end
+		else 
+			new_body = raw_body
+		end
+
+		return new_body
 	end
 end
