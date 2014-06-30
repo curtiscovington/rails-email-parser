@@ -19,6 +19,7 @@ class EmailParser
 
 		if (body_index != -1)
 			header_fields = fields.shift(body_index)
+			puts header_fields
 			body = fields.join("\r\n")
 		end
 
@@ -67,6 +68,7 @@ class EmailParser
 	end
 
 	def self.parse_body(content_type,raw_body)
+		#puts content_type
 
 		mime_type = content_type.match(/^[a-zA-Z]+\/[a-zA-Z]+;?/)[0]
 		
@@ -82,7 +84,19 @@ class EmailParser
 			parts[1...-1].to_a.each_with_index do |part, i|
 				# Can save these parts for use elsewhere
 				# For the simple purpose of this, just append to body.
-				new_body += part
+				fields, body = part.split(/#{CRLF}#{WSP}*#{CRLF}/m, 2)
+
+				# Give a default content type
+				part_content_type = "text/plain"
+				if (!fields.nil?)
+					headers = headers(fields.split(HEADER_SPLIT))
+					if (!headers["Content-Type"].nil?)
+						part_content_type = headers["Content-Type"]
+					end
+				end
+				if (!body.nil?)
+					new_body += parse_body(part_content_type, body)
+				end
 			end
 		else 
 			new_body = raw_body
