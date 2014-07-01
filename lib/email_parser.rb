@@ -2,8 +2,8 @@ class EmailParser
 	# Using http://tools.ietf.org/html/rfc2822
 
 
-	CRLF 		  = /\r\n/
-	WSP 		  = /[\x9\x20]/
+	CRLF 	      = /\r\n/
+	WSP 	      = /[\x9\x20]/
 	FIELD_NAME    = /[\x21-\x39\x3b-\x7e]+/
 	FIELD_BODY    = /.+/m
 	FIELD_SPLIT   = /^(#{FIELD_NAME})\s*:\s*(#{FIELD_BODY})?$/
