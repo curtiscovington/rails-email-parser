@@ -8,12 +8,13 @@ class EmailParser
 	FIELD_BODY    = /.+/m
 	FIELD_SPLIT   = /^(#{FIELD_NAME})\s*:\s*(#{FIELD_BODY})?$/
 	HEADER_SPLIT  = /#{CRLF}(?!#{WSP})/
-
+	HEADER_BODY_SPLIT = /#{CRLF}#{WSP}*#{CRLF}/m
+	
 	def self.parse(raw_email)
 		parsed_email = Hash.new
 
 		# Seperate the email into an array by the header
-		fields, body = raw_email.split(/#{CRLF}#{WSP}*#{CRLF}/m, 2)
+		fields, body = raw_email.split(HEADER_BODY_SPLIT, 2)
 	
 		header_fields = fields.split(HEADER_SPLIT)
 
@@ -72,7 +73,7 @@ class EmailParser
 		parts.each do |part|
 			# Can save these parts for use elsewhere
 			# For the simple purpose of this, just append to body.
-			fields, body = part.split(/#{CRLF}#{WSP}*#{CRLF}/m, 2)
+			fields, body = part.split(HEADER_BODY_SPLIT, 2)
 
 			# Give a default content type
 			part_content_type = "text/plain"
